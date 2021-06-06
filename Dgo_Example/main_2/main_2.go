@@ -47,6 +47,7 @@ type Product struct {
 	Price float32 `json:"price,omitempty"`
 }
 type Transaction struct {
+	Uid         string    `json:"uid,omitempty"`
 	Id          string    `json:"id,omitempty"`
 	BuyerId     []Buyer   `json:"buyerId,omitempty"`
 	ProductId   []Product `json:"productId,omitempty"`
@@ -70,8 +71,8 @@ func main() {
 	// In the example below new nodes for Alice, Bob and Charlie and school are created (since they
 	// dont have a Uid).
 	T := Transaction{
-
-		Id: "#000060b6ca00",
+		Uid: "_:#000060b6ca00",
+		Id:  "#000060b6ca00",
 		BuyerId: []Buyer{
 			{
 				Id:   "490d6704",
@@ -109,7 +110,7 @@ func main() {
 			},
 		},
 		DirectionIp: "157.62.23.254",
-		Device:      "mac",
+		Device:      "Mac",
 	}
 	/* p := Person{
 		Uid:     "_:alice",
@@ -136,25 +137,25 @@ func main() {
 	*/
 	op := &api.Operation{}
 	op.Schema = `
-		Id:string .
+		id:string .
 		buyerId: [uid] .
-		ProductId: [uid] .
+		productId: [uid] .
 		Id: string .
-		Name: string .
-		Price: int .
-		Age: int . 
+		name: string .
+		price: int .
+		age: int . 
 		type product{
-			Id: string
-			Name: string
-			Price: int
+			id: string
+			name: string
+			price: int
 		}
 		type buyer {
-			Id: string  
-			Name: string
-			Age: int 
+			id: string  
+			name: string
+			age: int 
 		}
-		DirectionIp: string .
-		Device: string .
+		directionIp: string .
+		device: string .
 	`
 
 	ctx := context.Background()
@@ -178,17 +179,23 @@ func main() {
 	}
 
 	// Assigned uids for nodes which were created would be returned in the assigned.Uids map.
-	variables := map[string]string{"id": assigned.Uids["0x02"]}
-	q := `query Me(id: string){
-		me(func: id(id)) {
-			name
-			id
+	variables := map[string]string{"$id1": assigned.Uids["#000060b6ca00"]}
+	q := `query Me($id1: string){
+		me(func:  uid($id1)) {
 		direction_ip
 		device
-	127.0.0.1
+		buyerId  @filter(eq(name, "beaumont")){
+			name
+			id
+			age
+		}
+		productId{
+			name
+			id
+			price
+		}
 		}
 	}`
-
 	resp, err := dg.NewTxn().QueryWithVars(ctx, q, variables)
 	if err != nil {
 		log.Fatal(err)
@@ -204,5 +211,6 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Printf("Me: %+v\n", r.Me)
+	fmt.Printf("Product:", r.productId)
 	// R.Me would be same as the person that we set above
 }

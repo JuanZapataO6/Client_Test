@@ -22,11 +22,25 @@ func main() {
 
 	op := &api.Operation{}
 	op.Schema = `
-		transaction_id: string @index(exact) .
-		age: int .
-		married: bool .
-		loc: geo .
-		dob: datetime .
+		id:string .
+		buyerId: [uid] .
+		productId: [uid] .
+		Id: string .
+		name: string .
+		price: int .
+		age: int . 
+		type product{
+			id: string
+			name: string
+			price: int
+		}
+		type buyer {
+			id: string  
+			name: string
+			age: int 
+		}
+		directionIp: string .
+		device: string .
 	`
 
 	ctx := context.Background()
@@ -36,7 +50,7 @@ func main() {
 	}
 
 	// Ask for the type of name and age.
-	resp, err := dg.NewTxn().Query(ctx, `schema(pred: [name, age]) {type}`)
+	resp, err := dg.NewTxn().Query(ctx, `schema(pred: [name, age, directionIp]) {type}`)
 	if err != nil {
 		log.Fatal(err)
 	}
