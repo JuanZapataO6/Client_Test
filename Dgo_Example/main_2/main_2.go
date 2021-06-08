@@ -5,7 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"time"
+
+	handlers "VueGo_Example/handlers"
 
 	dgo "github.com/dgraph-io/dgo/v2"
 	api "github.com/dgraph-io/dgo/v2/protos/api"
@@ -211,6 +214,20 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Printf("Me: %+v\n", r.Me)
-	fmt.Printf("Product:", r.productId)
 	// R.Me would be same as the person that we set above
+	http.HandleFunc("/addnewuser/", handlers.AddNewUserFunc)
+	http.HandleFunc("/notsucceded", handlers.NotSucceded)
+
+	http.HandleFunc("/deleted", handlers.DeletedFunc)
+	http.HandleFunc("/deleteuser/deleted", handlers.DeleteUserFunc)
+	http.HandleFunc("/deleteuser/", handlers.DeleteUserServe)
+	http.HandleFunc("/deleteuser/notsuccededdelete", handlers.NotSuccededDelete)
+
+	http.HandleFunc("/", handlers.IndexFunc)
+
+	http.HandleFunc("/showuser/show", handlers.ShowUserFunc)
+	http.HandleFunc("/showuser/", handlers.ShowUser)
+	http.HandleFunc("/showuser/notsuccededshow/", handlers.NotSuccededShow)
+
+	http.ListenAndServe(":3000", nil)
 }

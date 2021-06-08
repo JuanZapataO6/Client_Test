@@ -1,3 +1,3 @@
-module Example_Go
+module VueGo_Example
 
 go 1.16

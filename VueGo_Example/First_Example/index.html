@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vuejs</title>
+</head>
+
+<body>
+    <div id="elemento">
+        {{contenido}}
+        <input type="text" placeholder="nuevoLenguaje" v-model="nuevoLenguaje" />
+        <input type="text" placeholder="nuevoLink" v-model="nuevoLink"/>
+        <button @click="agregarLenguaje">Agregar Lenguaje </button>
+        <ul>
+            <li v-for="Lenguaje in lenguajes">
+                <a :href="lenguaje.link" target="_blank ">{{lenguaje.nombre}}</a></li>
+        </ul>
+    </div>
+<script  type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script> type="text/javascript"
+    var app = new Vue({
+        el: "#elemento",
+        data: {
+            contenido: "Hola Mundo",
+            lenguajes: [
+                { nombre: "JavaScript", link: 'https://www.javascript.com' },
+                { nombre: "PHP", link: 'https://php.net' },
+                { nombre: "Python", link: 'https://www.python.org' }
+            ],
+            nuevoLenguaje: '',
+            nuevoLink: '',
+        },
+        methods: {
+            agregarLenguaje() {
+                this.lenguajes.push({ nombre: this.nuevoLenguaje, link: this.nuevoLink })
+            }
+        },
+    });
+</script>
+</body>
+</html>
